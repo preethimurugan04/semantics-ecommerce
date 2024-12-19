@@ -1,0 +1,210 @@
+@prefix : <https://example.com/ecommerce#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ecommerce: <https://example.com/ecommerce#> .
+@base <https://example.com/ecommerce#> .
+
+<https://example.com/ecommerce> rdf:type owl:Ontology .
+
+#################################################################
+#    Annotation properties
+#################################################################
+
+###  https://example.com/ecommerce#isReviewOf
+ecommerce:isReviewOf rdf:type owl:AnnotationProperty .
+
+
+###  https://example.com/ecommerce#subCategoryOf
+ecommerce:subCategoryOf rdf:type owl:AnnotationProperty .
+
+
+###  https://example.com/ecommerce#writtenByUser
+ecommerce:writtenByUser rdf:type owl:AnnotationProperty .
+
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  https://example.com/ecommerce#belongsToCategory
+ecommerce:belongsToCategory rdf:type owl:ObjectProperty ;
+                            owl:equivalentProperty ecommerce:categorizedAs ;
+                            rdf:type owl:TransitiveProperty ;
+                            rdfs:domain ecommerce:Product ;
+                            rdfs:range ecommerce:Category .
+
+
+###  https://example.com/ecommerce#categorizedAs
+ecommerce:categorizedAs rdf:type owl:ObjectProperty .
+
+
+###  https://example.com/ecommerce#containsProduct
+ecommerce:containsProduct rdf:type owl:ObjectProperty ,
+                                   owl:ReflexiveProperty ;
+                          rdfs:domain ecommerce:Order ;
+                          rdfs:range ecommerce:Product .
+
+
+###  https://example.com/ecommerce#hasCustomerReview
+ecommerce:hasCustomerReview rdf:type owl:ObjectProperty ;
+                            owl:propertyChainAxiom ( ecommerce:hasReview
+                                                   ) ,
+                                                   ( ecommerce:placedByUser
+                                                   ) .
+
+
+###  https://example.com/ecommerce#hasPlacedOrder
+ecommerce:hasPlacedOrder rdf:type owl:ObjectProperty ;
+                         owl:inverseOf ecommerce:placedByUser .
+
+
+###  https://example.com/ecommerce#hasReview
+ecommerce:hasReview rdf:type owl:ObjectProperty ,
+                             owl:SymmetricProperty ;
+                    rdfs:domain ecommerce:Product ;
+                    rdfs:range ecommerce:Review .
+
+
+###  https://example.com/ecommerce#placedByUser
+ecommerce:placedByUser rdf:type owl:ObjectProperty ,
+                                owl:FunctionalProperty ;
+                       rdfs:domain ecommerce:Order ;
+                       rdfs:range ecommerce:User .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  https://example.com/ecommerce#comment
+ecommerce:comment rdf:type owl:DatatypeProperty ;
+                  rdfs:domain ecommerce:Review ;
+                  rdfs:range rdfs:Literal .
+
+
+###  https://example.com/ecommerce#orderDate
+ecommerce:orderDate rdf:type owl:DatatypeProperty ;
+                    rdfs:domain ecommerce:Order ;
+                    rdfs:range xsd:dateTime .
+
+
+###  https://example.com/ecommerce#price
+ecommerce:price rdf:type owl:DatatypeProperty ;
+                rdfs:domain ecommerce:Product ;
+                rdfs:range xsd:decimal .
+
+
+###  https://example.com/ecommerce#productName
+ecommerce:productName rdf:type owl:DatatypeProperty ;
+                      rdfs:domain ecommerce:Product ;
+                      rdfs:range rdfs:Literal .
+
+
+###  https://example.com/ecommerce#rating
+ecommerce:rating rdf:type owl:DatatypeProperty ;
+                 rdfs:domain ecommerce:Review ;
+                 rdfs:range xsd:integer .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  https://example.com/ecommerce#Category
+ecommerce:Category rdf:type owl:Class ;
+                   owl:equivalentClass [ rdf:type owl:Restriction ;
+                                         owl:onProperty ecommerce:containsProduct ;
+                                         owl:someValuesFrom ecommerce:Product
+                                       ] .
+
+
+###  https://example.com/ecommerce#MobileDevice
+ecommerce:MobileDevice rdf:type owl:Class ;
+                       rdfs:subClassOf ecommerce:Product .
+
+
+###  https://example.com/ecommerce#NonProduct
+ecommerce:NonProduct rdf:type owl:Class ;
+                     owl:equivalentClass [ rdf:type owl:Class ;
+                                           owl:complementOf ecommerce:Product
+                                         ] ;
+                     rdfs:subClassOf ecommerce:Product .
+
+
+###  https://example.com/ecommerce#Order
+ecommerce:Order rdf:type owl:Class ;
+                owl:equivalentClass [ rdf:type owl:Restriction ;
+                                      owl:onProperty ecommerce:containsProduct ;
+                                      owl:cardinality "1"^^xsd:nonNegativeInteger
+                                    ] .
+
+
+###  https://example.com/ecommerce#PremiumUser
+ecommerce:PremiumUser rdf:type owl:Class ;
+                      rdfs:subClassOf ecommerce:User .
+
+
+###  https://example.com/ecommerce#Product
+ecommerce:Product rdf:type owl:Class ;
+                  owl:disjointWith ecommerce:User .
+
+
+###  https://example.com/ecommerce#Review
+ecommerce:Review rdf:type owl:Class .
+
+
+###  https://example.com/ecommerce#User
+ecommerce:User rdf:type owl:Class .
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+###  https://example.com/ecommerce#Electronics
+ecommerce:Electronics rdf:type owl:NamedIndividual ,
+                               ecommerce:Category ;
+                      rdfs:label "Electronics" .
+
+
+###  https://example.com/ecommerce#Order34567
+ecommerce:Order34567 rdf:type owl:NamedIndividual ,
+                              ecommerce:Order ;
+                     ecommerce:containsProduct ecommerce:Product12345 ;
+                     ecommerce:placedByUser ecommerce:User5678 ;
+                     ecommerce:orderDate "2024-11-01T10:30:00"^^xsd:dateTime .
+
+
+###  https://example.com/ecommerce#Product12345
+ecommerce:Product12345 rdf:type owl:NamedIndividual ,
+                                ecommerce:Product ;
+                       ecommerce:belongsToCategory ecommerce:Smartphones ;
+                       ecommerce:price 599.99 ;
+                       ecommerce:productName "Smartphone X12"^^rdfs:Literal .
+
+
+###  https://example.com/ecommerce#Review789
+ecommerce:Review789 rdf:type owl:NamedIndividual ,
+                             ecommerce:Review ;
+                    ecommerce:comment "Good value for money"^^rdfs:Literal ;
+                    ecommerce:rating 4 ;
+                    ecommerce:isReviewOf ecommerce:Product12345 ;
+                    ecommerce:writtenByUser ecommerce:User5678 .
+
+
+###  https://example.com/ecommerce#Smartphones
+ecommerce:Smartphones rdf:type owl:NamedIndividual ,
+                               ecommerce:Category ;
+                      rdfs:label "Smartphones" ;
+                      ecommerce:subCategoryOf ecommerce:Electronics .
+
+
+###  https://example.com/ecommerce#User5678
+ecommerce:User5678 rdf:type owl:NamedIndividual ,
+                            ecommerce:User .
+
+
+###  Generated by the OWL API (version 4.5.29.2024-05-13T12:11:03Z) https://github.com/owlcs/owlapi
